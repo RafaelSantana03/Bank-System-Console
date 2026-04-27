@@ -1,9 +1,19 @@
 ﻿using Bank_System_Console.Enums;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Bank_System_Console.Models;
 
 public class Conta
 {
+    private TipoDeConta tipoDeConta;
+
+    public Conta(int idCliente, int numeroDaConta, TipoDeConta tipoDeConta)
+    {
+        IdCliente = idCliente;
+        NumeroDaConta = numeroDaConta;
+        Tipo = tipoDeConta;
+    }
+
     public int IdCliente { get; set; }
     public decimal Saldo { get; private set; }
     public int NumeroDaConta { get; set; }
@@ -11,12 +21,11 @@ public class Conta
     public List<Transacao>? Extrato { get; set; } = new List<Transacao>();
     public TipoDeConta Tipo { get; set; }
 
-
     public void Depositar(decimal valor)
     {
         if (valor <= 0)
             throw new ArgumentException("Valor de depósito deve ser positivo.");
-        
+
         Saldo += valor;
         Extrato.Add(new Transacao /* detalhes da transação */
         {
@@ -30,7 +39,7 @@ public class Conta
     {
         if (valor <= 0)
             throw new ArgumentException("Valor de saque deve ser positivo");
-        if (valor > Saldo )
+        if (valor > Saldo)
             throw new InvalidOperationException("Saldo insuficiente");
 
         Saldo -= valor; // Atualiza o saldo
@@ -41,4 +50,11 @@ public class Conta
             Valor = valor
         });
     }
+
+    // criar um override do método ToString para exibir as informações da conta
+    public override string ToString()
+    {
+        return $"Número da Conta: {NumeroDaConta}, Tipo: {Tipo}, Saldo: {Saldo:C}";
+    }
 }
+
