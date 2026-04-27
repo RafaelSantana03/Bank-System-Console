@@ -8,4 +8,9 @@ public class Transacao
     public DateTime Data { get; set; }
     public string Tipo { get; set; }
     public decimal Valor { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Data}: {Tipo} de {Valor:C}";
+    }
 }
