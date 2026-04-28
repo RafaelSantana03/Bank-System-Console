@@ -18,7 +18,7 @@ public class Conta
     public decimal Saldo { get; private set; }
     public int NumeroDaConta { get; set; }
 
-    public List<Transacao>? Extrato { get; set; } = new List<Transacao>();
+    public List<Transacao> Extrato { get; private set; } = new();
     public TipoDeConta Tipo { get; set; }
 
     public void Depositar(decimal valor)

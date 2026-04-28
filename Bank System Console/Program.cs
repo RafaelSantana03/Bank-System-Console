@@ -46,7 +46,12 @@ public class Program
                     if (numeroDaConta > 99999)
                     {
                         Console.WriteLine("Número da conta inválido. O número deve ter no máximo 5 dígitos.");
-                        return;
+                        break;
+                    }
+                    if(contas.Any(c => c.NumeroDaConta == numeroDaConta))
+                    {
+                        Console.WriteLine("Número da conta já existe. Por favor, escolha outro número.");
+                        break;
                     }
                     Console.WriteLine("Digite o tipo de conta (1 - Corrente, 2 - Poupança): ");
                     var tipoDeConta = (TipoDeConta)int.Parse(Console.ReadLine()!);
@@ -61,7 +66,7 @@ public class Program
                     Console.WriteLine("Digite o número da conta:");
                     var numeroContaDeposito = int.Parse(Console.ReadLine()!);
 
-                    Conta contaDeposito = contas.First(c => c.NumeroDaConta == numeroContaDeposito);
+                    Conta contaDeposito = contas.FirstOrDefault(c => c.NumeroDaConta == numeroContaDeposito);
                     if (contaDeposito == null)
                     {
                         Console.WriteLine("Conta não encontrada.");
@@ -84,7 +89,7 @@ public class Program
 
                     Console.WriteLine("Digite o número da conta:");
                     var numeroContaSaque = int.Parse(Console.ReadLine()!);
-                    Conta contaParaSaque = contas.First(x => x.NumeroDaConta == numeroContaSaque);
+                    Conta contaParaSaque = contas.FirstOrDefault(x => x.NumeroDaConta == numeroContaSaque);
                     if (contaParaSaque is null)
                     {
                         Console.WriteLine("Conta não encontrada.");
@@ -92,18 +97,15 @@ public class Program
                     }
                     Console.WriteLine("Digite o valor para sacar:");
                     var valorSaque = decimal.Parse(Console.ReadLine()!);
-                    if (valorSaque <= 0)
+                    try
                     {
-                        Console.WriteLine("Valor de saque inválido. O valor deve ser positivo.");
-                        break;
+                        contaParaSaque.Sacar(valorSaque);
+                        Console.WriteLine($"Saque de {valorSaque:C} realizado com sucesso na conta: {contaParaSaque.NumeroDaConta}.");
                     }
-                    if (contaParaSaque.Saldo < valorSaque)
+                    catch(Exception ex)
                     {
-                        Console.WriteLine("Saldo insuficiente para realizar o saque.");
-                        break;
+                        Console.WriteLine(ex.Message);
                     }
-                    contaParaSaque.Sacar(valorSaque);
-                    Console.WriteLine($"Saque de {valorSaque:C} realizado com sucesso na conta: {contaParaSaque.NumeroDaConta}.");
                     break;
 
                 case "4":
