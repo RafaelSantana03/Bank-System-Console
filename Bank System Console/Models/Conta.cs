@@ -1,11 +1,11 @@
 ﻿using Bank_System_Console.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Bank_System_Console.Models;
 
 public class Conta
 {
-    private TipoDeConta tipoDeConta;
 
     public Conta(int idCliente, int numeroDaConta, TipoDeConta tipoDeConta)
     {

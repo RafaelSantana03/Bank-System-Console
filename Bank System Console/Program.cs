@@ -14,12 +14,13 @@ public class Program
          new Conta(2, 54321, TipoDeConta.Corrente),
          new Conta(3, 67890, TipoDeConta.Poupanca)
         };
-        // depositando um valor inicial para teste
-        contas.First(c => c.NumeroDaConta == 12345).Depositar(1000);
+
+        Banco banco = new Banco(contas); // instanciando o banco com as contas pré definidas
+
+        contas.First(c => c.NumeroDaConta == 12345).Depositar(1000); // depositando um valor para teste
 
         while (true)
         {
-
             // Menu de opções para o usuário com switch case para cada opção
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n## Escolha uma opção: ##");
@@ -40,109 +41,110 @@ public class Program
                     Console.WriteLine("\n--- Criar conta ---");
                     Console.WriteLine("Digite o ID do cliente: ");
                     var idCliente = int.Parse(Console.ReadLine()!);
-
-                    Console.WriteLine("Digite o número da conta: (O número deve ter no máximo 5 dígitos)");
-                    var numeroDaConta = int.Parse(Console.ReadLine()!);
-                    if (numeroDaConta > 99999)
-                    {
-                        Console.WriteLine("Número da conta inválido. O número deve ter no máximo 5 dígitos.");
-                        break;
-                    }
-                    if(contas.Any(c => c.NumeroDaConta == numeroDaConta))
-                    {
-                        Console.WriteLine("Número da conta já existe. Por favor, escolha outro número.");
-                        break;
-                    }
-                    Console.WriteLine("Digite o tipo de conta (1 - Corrente, 2 - Poupança): ");
-                    var tipoDeConta = (TipoDeConta)int.Parse(Console.ReadLine()!);
-                    Conta NovaConta = new Conta(idCliente, numeroDaConta, tipoDeConta);
-                    contas.Add(NovaConta);
-                    Console.WriteLine($"Conta criada: {NovaConta.ToString()}");
-                    break;
-
-                case "2":
-                    Console.WriteLine("\n--- Depositar ---");
-
-                    Console.WriteLine("Digite o número da conta:");
-                    var numeroContaDeposito = int.Parse(Console.ReadLine()!);
-
-                    Conta contaDeposito = contas.FirstOrDefault(c => c.NumeroDaConta == numeroContaDeposito);
-                    if (contaDeposito == null)
-                    {
-                        Console.WriteLine("Conta não encontrada.");
-                        break;
-                    }
-
-                    Console.WriteLine("Digite o valor para depositar:");
-                    var valorDeposito = decimal.Parse(Console.ReadLine()!);
-                    if (valorDeposito <= 0)
-                    {
-                        Console.WriteLine("Valor de depósito inválido. O valor deve ser positivo.");
-                        break;
-                    }
-                    contaDeposito.Depositar(valorDeposito);
-                    Console.WriteLine($"Depósito de {valorDeposito:C} realizado com sucesso na conta: {contaDeposito.NumeroDaConta}.");
-                    break;
-
-                case "3":
-                    Console.WriteLine("\n--- Sacar ---");
-
-                    Console.WriteLine("Digite o número da conta:");
-                    var numeroContaSaque = int.Parse(Console.ReadLine()!);
-                    Conta contaParaSaque = contas.FirstOrDefault(x => x.NumeroDaConta == numeroContaSaque);
-                    if (contaParaSaque is null)
-                    {
-                        Console.WriteLine("Conta não encontrada.");
-                        break;
-                    }
-                    Console.WriteLine("Digite o valor para sacar:");
-                    var valorSaque = decimal.Parse(Console.ReadLine()!);
                     try
                     {
-                        contaParaSaque.Sacar(valorSaque);
-                        Console.WriteLine($"Saque de {valorSaque:C} realizado com sucesso na conta: {contaParaSaque.NumeroDaConta}.");
+                        Console.WriteLine("Digite o número da conta: (O número deve ter no máximo 5 dígitos)");
+                        var numeroDaConta = int.Parse(Console.ReadLine()!);
+                        if (numeroDaConta > 99999)
+                            throw new ArgumentException("Número da conta deve ter no máximo 5 dígitos.");
+
+                        Console.WriteLine("Digite o tipo de conta (1 - Corrente, 2 - Poupança): ");
+                        var tipoDeConta = (TipoDeConta)int.Parse(Console.ReadLine()!);
+
+
+                        Conta NovaConta = new Conta(idCliente, numeroDaConta, tipoDeConta);
+                        banco.CriarConta(NovaConta); // Criando a conta e adicionando ao banco
+                        Console.WriteLine($"Conta criada: {NovaConta.ToString()}");
                     }
-                    catch(Exception ex)
+                    catch (ArgumentException ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
                     break;
 
+                case "2":
+                    Console.WriteLine("\n--- Depositar ---");
+
+                    try
+                    {
+                        Console.WriteLine("Digite o número da conta:");
+                        var numeroContaDeposito = int.Parse(Console.ReadLine()!);
+                        banco.BuscarConta(numeroContaDeposito);
+
+                        Console.WriteLine("Digite o valor para depositar:");
+                        var valorDeposito = decimal.Parse(Console.ReadLine()!);
+                        banco.Depositar(valorDeposito, numeroContaDeposito);
+
+                        Console.WriteLine($"Depósito de {valorDeposito:C} realizado com sucesso na conta: {numeroContaDeposito}.");
+                        banco.ObterSaldo(numeroContaDeposito);  
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    break;
+
+                case "3":
+                    Console.WriteLine("\n--- Sacar ---");
+                    try
+                    {
+                        Console.WriteLine("Digite o número da conta:");
+                        var numeroContaSaque = int.Parse(Console.ReadLine()!);
+                        banco.BuscarConta(numeroContaSaque);
+
+                        Console.WriteLine("Digite o valor para sacar:");
+                        var valorSaque = decimal.Parse(Console.ReadLine()!);
+                        banco.Sacar(valorSaque, numeroContaSaque);
+
+                        Console.WriteLine($"Saque de {valorSaque:C} realizado com sucesso na conta: {numeroContaSaque}");
+                        banco.ObterSaldo(numeroContaSaque);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        break;
+                    }
+                    break;
+
                 case "4":
                     Console.WriteLine("\n--- Extrato ---");
+                    try
+                    {
+                        Console.WriteLine("Digite o número da conta:");
+                        var numeroContaExtrato = int.Parse(Console.ReadLine()!);
+                        Conta contaExtrato = banco.BuscarConta(numeroContaExtrato);
 
-                    Console.WriteLine("Digite o número da conta:");
-                    var numeroContaExtrato = int.Parse(Console.ReadLine()!);
-                    Conta contaExtrato = contas.First(x => x.NumeroDaConta == numeroContaExtrato);
-                    if (contaExtrato is null)
-                    {
-                        Console.WriteLine("Conta não encontrada.");
-                        break;
+                        Console.WriteLine($"Extrato da conta {contaExtrato.NumeroDaConta}:");
+                        if (contaExtrato.Extrato.Count == 0)
+                        {
+                            Console.WriteLine("Nenhuma transação encontrada.");
+                            break;
+                        }
+                        foreach (var transacao in contaExtrato.Extrato)
+                        {
+                            Console.WriteLine($"{transacao.Data}: {transacao.Tipo} de {transacao.Valor:C}");
+                        }
                     }
-                    Console.WriteLine($"Extrato da conta {contaExtrato.NumeroDaConta}:");
-                    if (contaExtrato.Extrato is null || contaExtrato.Extrato.Count == 0)
+                    catch (ArgumentException ex)
                     {
-                        Console.WriteLine("Nenhuma transação encontrada.");
-                        break;
-                    }
-                    foreach (var transacao in contaExtrato.Extrato)
-                    {
-                        Console.WriteLine($"{transacao.Data}: {transacao.Tipo} de {transacao.Valor:C}");
+                        Console.WriteLine(ex.Message);
                     }
                     break;
 
                 case "5":
                     Console.WriteLine("\n--- Saldo ---");
-                    Console.WriteLine("Digite o número da conta:");
-                    var numeroContaSaldo = int.Parse(Console.ReadLine()!);
-
-                    Conta contaSaldo = contas.First(x => x.NumeroDaConta == numeroContaSaldo);
-                    if (contaSaldo is null)
+                    try
                     {
-                        Console.WriteLine("Conta não encontrada.");
-                        break;
+                        Console.WriteLine("Digite o número da conta:");
+                        var numeroContaSaldo = int.Parse(Console.ReadLine()!);
+                        Conta contaSaldo = banco.BuscarConta(numeroContaSaldo);
+
+                        banco.ObterSaldo(numeroContaSaldo);
                     }
-                    Console.WriteLine($"Saldo da conta {contaSaldo.NumeroDaConta}: {contaSaldo.Saldo:C}");
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                     break;
 
                 case "6":
