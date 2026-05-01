@@ -43,4 +43,13 @@ public class Banco
         Console.WriteLine($"Saldo atual: {conta.Saldo:C} da conta: {conta.NumeroDaConta}");
     }
 
+    public void Transferir(decimal valor, int numeroDaContaOrigem, int numeroDaContaDestino) // método para realizar uma transferência entre contas, recebe o valor, o número da conta de origem e o número da conta de destino
+    {
+        Conta contaOrigem = BuscarConta(numeroDaContaOrigem);
+        Conta contaDestino = BuscarConta(numeroDaContaDestino);
+        contaOrigem.Sacar(valor); // realiza o saque na conta de origem
+        contaDestino.Depositar(valor); // realiza o depósito na conta de destino
+        Console.WriteLine($"Transferência de {valor:C} realizada com sucesso da conta: {contaOrigem.NumeroDaConta} para a conta: {contaDestino.NumeroDaConta}");
+    }   
+
 }

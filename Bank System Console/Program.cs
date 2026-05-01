@@ -29,7 +29,8 @@ public class Program
             Console.WriteLine("\n--- 3. Sacar       ---");
             Console.WriteLine("\n--- 4. Extrato     ---");
             Console.WriteLine("\n--- 5. Ver Saldo   ---");
-            Console.WriteLine("\n--- 6. Sair        ---");
+            Console.WriteLine("\n--- 6. Transferir  ---");
+            Console.WriteLine("\n--- 7. Sair        ---");
             Console.ResetColor();
 
             // Lógica para ler a opção do usuário e chamar os métodos correspondentes
@@ -76,7 +77,7 @@ public class Program
                         banco.Depositar(valorDeposito, numeroContaDeposito);
 
                         Console.WriteLine($"Depósito de {valorDeposito:C} realizado com sucesso na conta: {numeroContaDeposito}.");
-                        banco.ObterSaldo(numeroContaDeposito);  
+                        banco.ObterSaldo(numeroContaDeposito);
                     }
                     catch (ArgumentException ex)
                     {
@@ -146,8 +147,28 @@ public class Program
                         Console.WriteLine(ex.Message);
                     }
                     break;
-
                 case "6":
+                    Console.WriteLine("\n--- Transferir ---");
+                    try
+                    {
+                        Console.WriteLine("Digite o número da conta de origem:");
+                        var numeroContaOrigem = int.Parse(Console.ReadLine()!);
+
+                        Console.WriteLine("Digite o número da conta de destino:");
+                        var numeroContaDestino = int.Parse(Console.ReadLine()!);
+
+                        Console.WriteLine("Informe o valor da transferência:");
+                        var valorTransferencia = decimal.Parse(Console.ReadLine()!);
+                        banco.Transferir(valorTransferencia, numeroContaOrigem, numeroContaDestino);
+
+                    }
+                    catch(ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }   
+                    break;
+
+                case "7":
                     Console.WriteLine("Saindo do sistema...");
                     return;
                 default:
