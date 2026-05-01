@@ -47,9 +47,12 @@ public class Banco
     {
         Conta contaOrigem = BuscarConta(numeroDaContaOrigem);
         Conta contaDestino = BuscarConta(numeroDaContaDestino);
+        if(contaOrigem == contaDestino) // validação para garantir que a conta de origem e destino sejam diferentes
+        {
+            throw new ArgumentException("Não é possível transferir para a mesma conta.");
+        }
         contaOrigem.Sacar(valor); // realiza o saque na conta de origem
         contaDestino.Depositar(valor); // realiza o depósito na conta de destino
-        Console.WriteLine($"Transferência de {valor:C} realizada com sucesso da conta: {contaOrigem.NumeroDaConta} para a conta: {contaDestino.NumeroDaConta}");
     }   
 
 }

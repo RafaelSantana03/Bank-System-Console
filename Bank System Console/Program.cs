@@ -1,5 +1,6 @@
 ﻿using Bank_System_Console.Enums;
 using Bank_System_Console.Models;
+using System.Drawing;
 
 namespace Bank_System_Console;
 
@@ -161,8 +162,10 @@ public class Program
                         var valorTransferencia = decimal.Parse(Console.ReadLine()!);
                         banco.Transferir(valorTransferencia, numeroContaOrigem, numeroContaDestino);
 
+                        Console.WriteLine($"Transferência de {valorTransferencia:C} realizada com sucesso da conta: {numeroContaOrigem} para a conta: {numeroContaDestino}");
+
                     }
-                    catch(ArgumentException ex)
+                    catch(Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                     }   
