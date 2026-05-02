@@ -13,9 +13,10 @@ public class Conta
         NumeroDaConta = numeroDaConta;
         Tipo = tipoDeConta;
     }
-
+    public Conta()  // necessário para o JsonSerializer conseguir desserializar
+    { }
     public int IdCliente { get; set; }
-    public decimal Saldo { get; private set; }
+    public decimal Saldo { get; private set; } // temporariamente público para serialização
     public int NumeroDaConta { get; set; }
 
     public List<Transacao> Extrato { get; private set; } = new();

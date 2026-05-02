@@ -51,7 +51,7 @@ public class Program
          new Conta(3, 67890, TipoDeConta.Poupanca)
         };
 
-        Banco banco = new Banco(contas); // instanciando o banco com as contas pré definidas
+        Banco banco = new Banco(); // instanciando o banco com as contas pré definidas
         contas.First(c => c.NumeroDaConta == 12345).Depositar(1000); // depositando um valor para teste
 
 
@@ -104,9 +104,9 @@ public class Program
                 Console.WriteLine("Digite o tipo de conta (1 - Corrente, 2 - Poupança): ");
                 var tipoDeConta = (TipoDeConta)int.Parse(Console.ReadLine()!);
 
-                Conta NovaConta = new Conta(idCliente, numeroDaConta, tipoDeConta);
-                banco.CriarConta(NovaConta); // Criando a conta e adicionando ao banco
-                Console.WriteLine($"Conta criada: {NovaConta.ToString()}");
+                Conta novaConta = new Conta(idCliente, numeroDaConta, tipoDeConta);
+                banco.CriarConta(novaConta); // Criando a conta e adicionando ao banco
+                Console.WriteLine($"Conta criada: {novaConta.ToString()}");
             }
             catch (ArgumentException ex)
             {
