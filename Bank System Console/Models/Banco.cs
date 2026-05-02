@@ -37,17 +37,17 @@ public class Banco
         conta.Sacar(valor);
     }
 
-    public void ObterSaldo(int numeroDaConta) // método para obter o saldo de uma conta, recebe o número da conta
+    public decimal ObterSaldo(int numeroDaConta) // método para obter o saldo de uma conta, recebe o número da conta
     {
         Conta conta = BuscarConta(numeroDaConta);
-        Console.WriteLine($"Saldo atual: {conta.Saldo:C} da conta: {conta.NumeroDaConta}");
+        return conta.Saldo;
     }
 
     public void Transferir(decimal valor, int numeroDaContaOrigem, int numeroDaContaDestino) // método para realizar uma transferência entre contas, recebe o valor, o número da conta de origem e o número da conta de destino
     {
         Conta contaOrigem = BuscarConta(numeroDaContaOrigem);
         Conta contaDestino = BuscarConta(numeroDaContaDestino);
-        if(contaOrigem == contaDestino) // validação para garantir que a conta de origem e destino sejam diferentes
+        if(numeroDaContaOrigem == numeroDaContaDestino) // validação para garantir que a conta de origem e destino sejam diferentes
         {
             throw new ArgumentException("Não é possível transferir para a mesma conta.");
         }

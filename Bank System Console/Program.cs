@@ -1,11 +1,34 @@
 ﻿using Bank_System_Console.Enums;
 using Bank_System_Console.Models;
 using System.Drawing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Bank_System_Console;
 
 public class Program
 {
+    public static int LerInt(string mensagem)
+    {
+        int numero;
+        while (true)
+        {
+            Console.Write(mensagem);
+            if (int.TryParse(Console.ReadLine(), out numero))
+                return numero;
+            Console.WriteLine("Número inválido. Por favor, digite um número inteiro.");
+        }
+    }
+    public static decimal LerDecimal(string mensagem)
+    {
+        decimal valorDecimal;
+        while (true)
+        {
+            Console.Write(mensagem);
+            if (decimal.TryParse(Console.ReadLine(), out valorDecimal))
+                return valorDecimal;
+            Console.WriteLine("Valor inválido. Por favor, digite um número decimal.");
+        }
+    }
     static void Main(string[] args)
     {
         // contas pré definida para teste
@@ -41,18 +64,16 @@ public class Program
             {
                 case "1":
                     Console.WriteLine("\n--- Criar conta ---");
-                    Console.WriteLine("Digite o ID do cliente: ");
+                    Console.Write("Digite o ID do cliente: ");
                     var idCliente = int.Parse(Console.ReadLine()!);
                     try
                     {
-                        Console.WriteLine("Digite o número da conta: (O número deve ter no máximo 5 dígitos)");
-                        var numeroDaConta = int.Parse(Console.ReadLine()!);
+                        var numeroDaConta = LerInt("Digite o número da conta: (O número deve ter no máximo 5 dígitos) ");
                         if (numeroDaConta > 99999)
                             throw new ArgumentException("Número da conta deve ter no máximo 5 dígitos.");
 
                         Console.WriteLine("Digite o tipo de conta (1 - Corrente, 2 - Poupança): ");
                         var tipoDeConta = (TipoDeConta)int.Parse(Console.ReadLine()!);
-
 
                         Conta NovaConta = new Conta(idCliente, numeroDaConta, tipoDeConta);
                         banco.CriarConta(NovaConta); // Criando a conta e adicionando ao banco
@@ -68,13 +89,11 @@ public class Program
                     Console.WriteLine("\n--- Depositar ---");
 
                     try
-                    {
-                        Console.WriteLine("Digite o número da conta:");
-                        var numeroContaDeposito = int.Parse(Console.ReadLine()!);
+                    {                       
+                        var numeroContaDeposito = LerInt("Digite o número da conta: ");
                         banco.BuscarConta(numeroContaDeposito);
 
-                        Console.WriteLine("Digite o valor para depositar:");
-                        var valorDeposito = decimal.Parse(Console.ReadLine()!);
+                        var valorDeposito = LerDecimal("Digite o valor para depositar:");
                         banco.Depositar(valorDeposito, numeroContaDeposito);
 
                         Console.WriteLine($"Depósito de {valorDeposito:C} realizado com sucesso na conta: {numeroContaDeposito}.");
@@ -90,12 +109,10 @@ public class Program
                     Console.WriteLine("\n--- Sacar ---");
                     try
                     {
-                        Console.WriteLine("Digite o número da conta:");
-                        var numeroContaSaque = int.Parse(Console.ReadLine()!);
+                        var numeroContaSaque = LerInt("Digite o número da conta: ");
                         banco.BuscarConta(numeroContaSaque);
 
-                        Console.WriteLine("Digite o valor para sacar:");
-                        var valorSaque = decimal.Parse(Console.ReadLine()!);
+                        var valorSaque = LerDecimal("Digite o valor para sacar: ");
                         banco.Sacar(valorSaque, numeroContaSaque);
 
                         Console.WriteLine($"Saque de {valorSaque:C} realizado com sucesso na conta: {numeroContaSaque}");
@@ -112,8 +129,7 @@ public class Program
                     Console.WriteLine("\n--- Extrato ---");
                     try
                     {
-                        Console.WriteLine("Digite o número da conta:");
-                        var numeroContaExtrato = int.Parse(Console.ReadLine()!);
+                        var numeroContaExtrato = LerInt("Digite o número da conta: ");
                         Conta contaExtrato = banco.BuscarConta(numeroContaExtrato);
 
                         Console.WriteLine($"Extrato da conta {contaExtrato.NumeroDaConta}:");
@@ -137,11 +153,10 @@ public class Program
                     Console.WriteLine("\n--- Saldo ---");
                     try
                     {
-                        Console.WriteLine("Digite o número da conta:");
-                        var numeroContaSaldo = int.Parse(Console.ReadLine()!);
-                        Conta contaSaldo = banco.BuscarConta(numeroContaSaldo);
+                        var numeroContaSaldo = LerInt("Digite o número da conta: ");
+                        decimal saldo = banco.ObterSaldo(numeroContaSaldo);
 
-                        banco.ObterSaldo(numeroContaSaldo);
+                        Console.WriteLine($"Saldo atual: {saldo:C} da conta: {numeroContaSaldo}");
                     }
                     catch (ArgumentException ex)
                     {
@@ -152,14 +167,11 @@ public class Program
                     Console.WriteLine("\n--- Transferir ---");
                     try
                     {
-                        Console.WriteLine("Digite o número da conta de origem:");
-                        var numeroContaOrigem = int.Parse(Console.ReadLine()!);
+                        var numeroContaOrigem = LerInt("Digite o número da conta Origem: ");
 
-                        Console.WriteLine("Digite o número da conta de destino:");
-                        var numeroContaDestino = int.Parse(Console.ReadLine()!);
+                        var numeroContaDestino = LerInt("Digite o número da conta de destino: ");
 
-                        Console.WriteLine("Informe o valor da transferência:");
-                        var valorTransferencia = decimal.Parse(Console.ReadLine()!);
+                        var valorTransferencia = LerDecimal("Informe o valor da transferência: ");
                         banco.Transferir(valorTransferencia, numeroContaOrigem, numeroContaDestino);
 
                         Console.WriteLine($"Transferência de {valorTransferencia:C} realizada com sucesso da conta: {numeroContaOrigem} para a conta: {numeroContaDestino}");
